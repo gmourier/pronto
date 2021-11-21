@@ -65,40 +65,42 @@ fn main() {
         .about("Manage your todo-list in your terminal")
         .version("v0.1.0")
         .author("Guillaume Mourier (@gmourier on GitHub)")
-        .subcommand(SubCommand::with_name("list")
+        .subcommand(SubCommand::with_name("l")
             .about("List tasks to-do")
         )
-        .subcommand(SubCommand::with_name("add")
+        .subcommand(SubCommand::with_name("a")
             .about("Add a task")
             .arg(Arg::with_name("desc")
                 .help("Sets the description for the new task")
                 .required(true)
             )
         )
-        .subcommand(SubCommand::with_name("complete")
+        .subcommand(SubCommand::with_name("r")
+        )
+        .subcommand(SubCommand::with_name("c")
             .about("Mark a task as completed")
             .arg(Arg::with_name("id")
                 .help("Identifier marking the task to be completed")
                 .required(true)
             )
         )
-        .subcommand(SubCommand::with_name("delete")
+        .subcommand(SubCommand::with_name("d")
             .about("Delete a task")
             .arg(Arg::with_name("id")
                 .help("Identifier marking the task to be deleted")
                 .required(true)
             )
         )
-        .subcommand(SubCommand::with_name("clear")
+        .subcommand(SubCommand::with_name("cl")
             .about("Clear tasks list")
         )
         .get_matches();
 
-    if let Some(_) = matches.subcommand_matches("list") {
+    if let Some(_) = matches.subcommand_matches("l") {
         print_tasks(&tasks);
     }
 
-    if let Some(add) = matches.subcommand_matches("add") {
+    if let Some(add) = matches.subcommand_matches("a") {
         let desc: String = add.value_of("desc").unwrap().into();
 
         tasks.insert(SystemTime::now().duration_since(UNIX_EPOCH).unwrap().as_secs() as i64, Task { desc: desc, done: false });
@@ -107,7 +109,7 @@ fn main() {
         print_tasks(&tasks);
     }
 
-    if let Some(complete) = matches.subcommand_matches("complete") {
+    if let Some(complete) = matches.subcommand_matches("c") {
         let id: i64 = complete.value_of("id").unwrap().parse::<i64>().expect("can't parse the identifier");
 
         if let Some(task) = tasks.get_mut(&id) {
@@ -118,7 +120,7 @@ fn main() {
         print_tasks(&tasks);
     }
 
-    if let Some(delete) = matches.subcommand_matches("delete") {
+    if let Some(delete) = matches.subcommand_matches("d") {
         let id: i64 = delete.value_of("id").unwrap().parse::<i64>().expect("can't parse the identifier");
 
         tasks.remove(&id);
@@ -127,7 +129,7 @@ fn main() {
         print_tasks(&tasks);
     }
 
-    if let Some(_) = matches.subcommand_matches("clear") {
+    if let Some(_) = matches.subcommand_matches("cl") {
         tasks.clear();
 
         write_tasks_data(&tasks).unwrap_or(());
