@@ -76,6 +76,17 @@ fn main() {
             )
         )
         .subcommand(SubCommand::with_name("r")
+            .about("Rename a task")
+            .arg(Arg::with_name("id")
+                .help("Identifer for the task to be updated")
+                .required(true)
+                .index(1)
+            )
+            .arg(Arg::with_name("desc")
+                .help("Sets the description for a task")
+                .required(true)
+                .index(2)
+            )
         )
         .subcommand(SubCommand::with_name("c")
             .about("Mark a task as completed")
@@ -104,6 +115,18 @@ fn main() {
         let desc: String = add.value_of("desc").unwrap().into();
 
         tasks.insert(SystemTime::now().duration_since(UNIX_EPOCH).unwrap().as_secs() as i64, Task { desc: desc, done: false });
+
+        write_tasks_data(&tasks).unwrap_or(());
+        print_tasks(&tasks);
+    }
+
+    if let Some(rename) = matches.subcommand_matches("r") {
+        let id: i64 = rename.value_of("id").unwrap().parse::<i64>().expect("can't parse the identifier");
+        let desc: String = rename.value_of("desc").unwrap().into();
+
+        if let Some(task) = tasks.get_mut(&id) {
+            task.desc = desc;
+        }
 
         write_tasks_data(&tasks).unwrap_or(());
         print_tasks(&tasks);
