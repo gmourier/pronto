@@ -19,19 +19,19 @@ pub enum Command {
     /// Update a task
     Update {
         /// Identifier for the task to update
-        id: i64,
+        id: i16,
         /// Description for the task
         description: String
     },
     /// Delete a task
     Delete {
         /// Identifier for the task to delete
-        id: i64
+        id: i16
     },
     /// Mark a task as completed
     Complete {
         /// Identifier for the task to complete
-        id: i64
+        id: i16
     },
     /// Clear all task
     Clear

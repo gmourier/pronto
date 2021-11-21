@@ -19,19 +19,19 @@ struct Task {
     created_at: i64
 }
 
-fn read_tasks_data() -> Result<HashMap<i64, Task>, Box<dyn Error>> {
+fn read_tasks_data() -> Result<HashMap<i16, Task>, Box<dyn Error>> {
     let file = fs::File::open("data.json").expect("File should open read only");
-    let tasks: HashMap<i64, Task> = serde_json::from_reader(file).expect("JSON was not well-formatted");
+    let tasks: HashMap<i16, Task> = serde_json::from_reader(file).expect("JSON was not well-formatted");
     Ok(tasks)
 }
 
-fn write_tasks_data(tasks: &HashMap<i64, Task>) -> Result<(), Box<dyn Error>> {
+fn write_tasks_data(tasks: &HashMap<i16, Task>) -> Result<(), Box<dyn Error>> {
     let data = serde_json::to_string(&tasks)?;
     fs::write("data.json", &data).expect("Unable to write data to file");
     Ok(())
 }
 
-fn print_tasks(tasks: &HashMap<i64, Task>) {
+fn print_tasks(tasks: &HashMap<i16, Task>) {
     let mut table = Table::new();
     table.set_format(*format::consts::FORMAT_NO_BORDER_LINE_SEPARATOR);
 
@@ -66,9 +66,9 @@ fn print_tasks(tasks: &HashMap<i64, Task>) {
     table.printstd();
 }
 
-fn add(tasks: &mut HashMap<i64, Task>, description: String) {
+fn add(tasks: &mut HashMap<i16, Task>, description: String) {
     //set current auto-increment for task id
-    let mut c: i64 = 0;
+    let mut c: i16 = 0;
     if let Some(&max) = tasks.keys().max(){
         c = max;
     }
@@ -83,23 +83,23 @@ fn add(tasks: &mut HashMap<i64, Task>, description: String) {
     );
 }
 
-fn update(tasks: &mut HashMap<i64, Task>, id: i64, description: String) {
+fn update(tasks: &mut HashMap<i16, Task>, id: i16, description: String) {
     if let Some(task) = tasks.get_mut(&id) {
         task.description = description;
     }
 }
 
-fn complete(tasks: &mut HashMap<i64, Task>, id: i64) {
+fn complete(tasks: &mut HashMap<i16, Task>, id: i16) {
     if let Some(task) = tasks.get_mut(&id) {
         task.completed = true;
     }
 }
 
-fn delete(tasks: &mut HashMap<i64, Task>, id: i64) {
+fn delete(tasks: &mut HashMap<i16, Task>, id: i16) {
     tasks.remove(&id);
 }
 
-fn clear(tasks: &mut HashMap<i64, Task>) {
+fn clear(tasks: &mut HashMap<i16, Task>) {
     tasks.clear();
 }
 
