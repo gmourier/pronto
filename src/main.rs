@@ -1,9 +1,9 @@
 extern crate clap;
 extern crate serde;
-#[macro_use] 
+#[macro_use]
 extern crate serde_derive;
 extern crate serde_json;
-#[macro_use] 
+#[macro_use]
 extern crate prettytable;
 use prettytable::{Table, format};
 use clap::{Arg, App, SubCommand};
@@ -56,7 +56,7 @@ fn print_tasks(tasks: &HashMap<i64, Task>) {
     }
 
     table.printstd();
-}   
+}
 
 fn main() {
     let mut tasks = read_tasks_data().unwrap();
@@ -101,7 +101,7 @@ fn main() {
     if let Some(add) = matches.subcommand_matches("add") {
         let desc: String = add.value_of("desc").unwrap().into();
 
-        tasks.insert(SystemTime::now().duration_since(UNIX_EPOCH).unwrap().as_secs().try_into().unwrap(), Task { desc: desc, done: false });
+        tasks.insert(SystemTime::now().duration_since(UNIX_EPOCH).unwrap().as_secs() as i64, Task { desc: desc, done: false });
 
         write_tasks_data(&tasks).unwrap_or(());
         print_tasks(&tasks);
